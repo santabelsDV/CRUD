@@ -88,4 +88,8 @@ async function getBook(req, res) {
     }
 }
 
-module.exports = {getBook, deleteBook, updateBook, getAllBook, addBook};
+async function getHello(req, res) {
+    res.send('Все працює!');
+}
+
+module.exports = {getBook, deleteBook, updateBook, getAllBook, addBook, getHello};
