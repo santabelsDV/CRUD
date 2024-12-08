@@ -1,3 +1,26 @@
+
+# CRUD
+
+CRUD (Create, Read, Update, Delete) - це вебзастосунок, що дозволяє виконувати основні операції над даними: створення, зчитування, оновлення та видалення.
+## Можливі запити даного проєкту
+
+### Create
+* `POST /books` - ствоює нову книгу
+	+ body: JSON з полями `title`, `author`, `year`
+	+ приклад: `{"title": "Harry Potter", "author": "J.K. Rowling", "year": 1997 }`
+
+### Read
+* `GET /books` - повертає список усіх книг
+* `GET /books/:id` - повертає книгу з id `:id`
+	+ приклад: `GET /books/1`
+
+### Update
+* `PUT /books/:id` - оновлює книгу з id `:id`
+	+ body: JSON з оновленими полями
+	+ приклад: `{"title": "Harry Potter and the Philosopher's Stone", "author": "J.K. Rowling", "year": 1997 }`
+
+### Delete
+* `DELETE /books/:id` - видаляє книгу з id `:id`
 # Інструкція для інсталяції проєкту
 
 Щоб встановити проєкт на інший пристрій, виконайте наступні кроки в командній строці:
