@@ -6,7 +6,7 @@ async function connectToDB() {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             server: 'localhost',
-            database: process.env.DB_DATABASE,
+            database: process.env.DB_DATABASE_DEVELOPMENT,
             options: {
                 encrypt: true,
                 trustServerCertificate: true

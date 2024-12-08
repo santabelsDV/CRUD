@@ -16,6 +16,12 @@
     "express": "^4.21.1",
     "ip": "^2.0.1",
     "mssql": "^11.0.1",
-    "my-ip": "^1.1.1"
+    "my-ip": "^1.1.1",
+    "mysql2": "^3.11.5",
+    "sequelize": "^6.37.5",
+    "tedious": "^18.6.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
   }
 }

@@ -1,15 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { connectToDB } = require('./conector');
+const {connectToDB} = require('./conector');
 const bookRoutes = require('./books');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 connectToDB();
-console.log(`Сервер запущено на http://localhost:3000`);
+console.log(`Сервер запущено на http://localhost:${port}`);
 app.use(bodyParser.json());
-
 
 
 app.use('/books', bookRoutes);
