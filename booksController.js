@@ -1,22 +1,33 @@
 const {sql} = require('./conector');
 
 async function getAllBook(req, res) {
-    console.log('Отримано GET запит для /records');
-    sql.query('SELECT * FROM Books', (err, results) => {
-        if (err) {
-            console.error('Помилка при отриманні записів: ', err);
-            res.status(500).send('Помилка при отриманні записів');
-            return;
-        }
-        console.log('Results:', results);
-        res.send(results.recordset);
-    });
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const offset = (page - 1) * limit;
+    const request = new sql.Request();
+
+    request.input('offset', sql.Int, offset);
+    request.input('limit', sql.Int, limit);
+    try {
+        const result = await request.query(
+            'SELECT * FROM Books ORDER BY id OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY'
+        );
+        const rezult = result.recordset
+        res.json({
+            rezult,
+            currentPage: page,
+        });
+    } catch (err) {
+        console.error('Помилка при отриманні записів:', err);
+        res.status(500).send('Помилка при отриманні записів');
+    }
 }
 
 async function addBook(req, res) {
     const {Pages, Name, Author, Year} = req.body;
 
     try {
+
         const request = new sql.Request();
 
         request.input('pages', sql.Int, Pages);
@@ -27,11 +38,14 @@ async function addBook(req, res) {
 
         await request.query('INSERT INTO Books (Pages, Name, Author, Year) VALUES (@pages, @name, @author, @year)');
 
+
         res.status(200).send('Книгу успішно створено');
     } catch (error) {
         console.error('Помилка створення книги:', error);
         res.status(500).send('Помилка створення книги');
     }
+
+
 }
 
 async function deleteBook(req, res) {
@@ -41,7 +55,9 @@ async function deleteBook(req, res) {
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
-        await request.query(`DELETE FROM Books WHERE id = @id`);
+        await request.query(`DELETE
+                             FROM Books
+                             WHERE id = @id`);
         res.status(200).send('Книгу успішно видалено');
     } catch (error) {
         console.error('Помилка видалення книги:', error);
@@ -79,7 +95,9 @@ async function getBook(req, res) {
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
-        await request.query(`SELECT * FROM Books WHERE id = @id`, (err, results) => {
+        await request.query(`SELECT *
+                             FROM Books
+                             WHERE id = @id`, (err, results) => {
             res.send(results.recordset);
         });
     } catch (error) {

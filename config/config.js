@@ -7,7 +7,7 @@ module.exports = {
         database:process.env.DB_DATABASE_DEVELOPMENT,
         host: process.env.DB_HOST,
         dialect: "mssql",
-        port: process.env.PORT,
+        port: process.env.PORT_MIGRATE,
         options: {
             encrypt: process.env.DB_ENCRYPT === 'true',
             trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',

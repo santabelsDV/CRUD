@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 connectToDB();
 console.log(`Сервер запущено на http://localhost:${port}`);
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "1kb" }));
 
 
 app.use('/books', router);
