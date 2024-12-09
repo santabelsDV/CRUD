@@ -1,4 +1,4 @@
-const {sql} = require('./conector');
+const {sql} = require('../database/conector');
 
 async function getAllBook(req, res) {
     const page = parseInt(req.query.page, 10) || 1;
@@ -22,7 +22,6 @@ async function getAllBook(req, res) {
         res.status(500).send('Помилка при отриманні записів');
     }
 }
-
 async function addBook(req, res) {
     const {Pages, Name, Author, Year} = req.body;
 
@@ -37,6 +36,7 @@ async function addBook(req, res) {
 
 
         await request.query('INSERT INTO Books (Pages, Name, Author, Year) VALUES (@pages, @name, @author, @year)');
+
 
 
         res.status(200).send('Книгу успішно створено');
@@ -55,9 +55,7 @@ async function deleteBook(req, res) {
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
-        await request.query(`DELETE
-                             FROM Books
-                             WHERE id = @id`);
+        await request.query(`DELETE FROM Books WHERE id = @id`);
         res.status(200).send('Книгу успішно видалено');
     } catch (error) {
         console.error('Помилка видалення книги:', error);
@@ -95,9 +93,7 @@ async function getBook(req, res) {
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
-        await request.query(`SELECT *
-                             FROM Books
-                             WHERE id = @id`, (err, results) => {
+        await request.query(`SELECT * FROM Books WHERE id = @id`, (err, results) => {
             res.send(results.recordset);
         });
     } catch (error) {
