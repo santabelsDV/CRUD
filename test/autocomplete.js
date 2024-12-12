@@ -1,9 +1,5 @@
-const {sql} = require('../database/conector');
-const {connection, connectToDB} = require('../database/conector');
 const { faker } = require('@faker-js/faker');
 const {books} = require('../database/models');
-const queri = 'INSERT INTO Books (Pages, Name, Author, Year) VALUES (?, ?, ?, ?)'
-
 
 for (let i = 0; i < 20; i++) {
     const Pages = faker.number.int({ min: 1, max: 1000 });
