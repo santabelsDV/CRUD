@@ -1,22 +1,16 @@
-const sql = require("mssql");
-require('dotenv').config()
-async function connectToDB() {
+const {sequelize} = require('./models');
+async function checkConnection() {
     try {
-        await sql.connect({
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            server: 'localhost',
-            database: process.env.DB_DATABASE_DEVELOPMENT,
-            options: {
-                encrypt: true,
-                trustServerCertificate: true
-            }
-        });
-
-        console.log('Підключення до бази даних встановлено.');
-    } catch (err) {
-        console.error('Не вдалося підключитися до бази даних:', err);
+        // Перевірка підключення до бази даних
+        await sequelize.authenticate(
+            {logging: false}
+        );
+        console.log('Підключення до бази даних успішне!');
+    } catch (error) {
+        console.error('Не вдалося підключитися до бази даних:', error);
     }
 }
 
-module.exports = { connectToDB, sql };
+
+
+module.exports = {checkConnection };

@@ -1,43 +1,35 @@
-const {sql} = require('../database/conector');
+
+const {books} = require('../database/models');
 
 async function getAllBook(req, res) {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const offset = (page - 1) * limit;
-    const request = new sql.Request();
 
-    request.input('offset', sql.Int, offset);
-    request.input('limit', sql.Int, limit);
-    try {
-        const result = await request.query(
-            'SELECT * FROM Books ORDER BY id OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY'
-        );
-        const rezult = result.recordset
-        res.json({
-            rezult,
-            currentPage: page,
-        });
-    } catch (err) {
-        console.error('Помилка при отриманні записів:', err);
-        res.status(500).send('Помилка при отриманні записів');
-    }
+    const usersWithCondition = await books.findAll({
+        order: [['id', 'ASC']], // Сортування за полем id
+        limit: limit, // Параметр LIMIT, який передається
+        offset: offset, // Параметр OFFSET, який передається
+    });
+
+    const results = usersWithCondition.map(book => book.dataValues);
+
+    res.json({
+        results,
+        currentPage: page,
+    });
 }
+
 async function addBook(req, res) {
     const {Pages, Name, Author, Year} = req.body;
 
     try {
-
-        const request = new sql.Request();
-
-        request.input('pages', sql.Int, Pages);
-        request.input('name', sql.NVarChar(255), Name);
-        request.input('author', sql.NVarChar(255), Author);
-        request.input('year', sql.Date, Year);
-
-
-        await request.query('INSERT INTO Books (Pages, Name, Author, Year) VALUES (@pages, @name, @author, @year)');
-
-
+        await books.create({
+            Pages: Pages,
+            Name: Name,
+            Author: Author,
+            Year: Year
+        });
 
         res.status(200).send('Книгу успішно створено');
     } catch (error) {
@@ -53,10 +45,14 @@ async function deleteBook(req, res) {
     console.log('delete' + id);
 
     try {
-        const request = new sql.Request();
-        request.input('id', sql.Int, id);
-        await request.query(`DELETE FROM Books WHERE id = @id`);
+        await books.destroy({
+            where: {
+                id: id
+            }
+        });
+
         res.status(200).send('Книгу успішно видалено');
+
     } catch (error) {
         console.error('Помилка видалення книги:', error);
         res.status(500).send('Помилка видалення книги');
@@ -67,18 +63,17 @@ async function updateBook(req, res) {
     const {Pages, Name, Author, Year} = req.body;
     let id = parseInt(req.params.id, 10);
 
-
     try {
-        const request = new sql.Request();
-
-        request.input('pages', sql.Int, Pages);
-        request.input('name', sql.NVarChar(255), Name);
-        request.input('author', sql.NVarChar(255), Author);
-        request.input('year', sql.Date, Year);
-        request.input('id', sql.Int, id);
-
-        await request.query('update Books set Pages = @pages, Name = @name, Author=@author ,Year = @year where id = @id',);
-
+        await books.update({
+            Pages: Pages,
+            Name: Name,
+            Author: Author,
+            Year: Year
+        }, {
+        where: {
+            id: id
+        }
+        })
         res.status(200).send('Книгу успішно змінено');
     } catch (error) {
         console.error('Помилка зміни книги:', error);
@@ -88,17 +83,19 @@ async function updateBook(req, res) {
 
 async function getBook(req, res) {
     let id = parseInt(req.params.id, 10);
-    console.log('Get: ' + id);
 
     try {
-        const request = new sql.Request();
-        request.input('id', sql.Int, id);
-        await request.query(`SELECT * FROM Books WHERE id = @id`, (err, results) => {
-            res.send(results.recordset);
+        await books.findOne({
+            where: {
+                id: id
+            }
+        }).then((result) => {
+            res.status(200).send(result);
         });
+
     } catch (error) {
-        console.error('Помилка виведення книги:', error);
-        res.status(500).send('Помилка виведення книги');
+        console.error('Помилка при отриманні книг:', error);
+        res.status(500).send('Помилка сервера');
     }
 }
 
