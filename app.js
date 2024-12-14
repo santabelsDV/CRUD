@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {router, routername} = require('./routes/books');
 const {checkConnection}=require('./database/conector');
-
+const {verifyToken} = require('./JWT/verifyToken');
+const {createToken} = require('./JWT/Generation');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +20,9 @@ app.listen(port, () => {
 });
 
 checkConnection().then(()=>{
-    app.use('/books', router);
+    app.use('/books',verifyToken, router);
     app.use('/', routername);
+    app.use('/', routername);
+
 });
 
