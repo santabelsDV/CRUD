@@ -22,7 +22,6 @@ async function login(req, res) {
         const refreshToken = await generateRefreshToken(user);
         const accessToken = await generateAccessToken(user);
 
-        // Записуємо обидва токени
         await writeRefreshToken(user.id, refreshToken);
         await writeAccessToken(user.id, accessToken);
 
@@ -47,7 +46,7 @@ async function refresh(req, res) {
     try {
         const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
 
-        // Важливо: отримати user з бази за ID з токену
+
         const user = await User.findByPk(decoded.id);
 
         if (!user) {
@@ -57,7 +56,7 @@ async function refresh(req, res) {
         const accessToken = await generateAccessToken(user);
         await writeAccessToken(user.id, accessToken);
 
-        res.json({ accessToken }); // Надсилаємо новий accessToken назад
+        res.json({ accessToken });
     } catch (error) {
         res.status(400).json({message: 'Недійсний токен необхідно залогінитись'});
     }

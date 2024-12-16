@@ -7,9 +7,9 @@ async function getAllBook(req, res) {
     const offset = (page - 1) * limit;
 
     const usersWithCondition = await books.findAll({
-        order: [['id', 'ASC']], // Сортування за полем id
-        limit: limit, // Параметр LIMIT, який передається
-        offset: offset, // Параметр OFFSET, який передається
+        order: [['id', 'ASC']],
+        limit: limit,
+        offset: offset,
     });
 
     const results = usersWithCondition.map(book => book.dataValues);
