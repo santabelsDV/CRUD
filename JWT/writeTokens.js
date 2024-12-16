@@ -38,7 +38,4 @@ const writeAccessToken =  (userId, accesstoken) => {
     return accesstoken;
 };
 
-
-
-
 module.exports = {writeRefreshToken, writeAccessToken};

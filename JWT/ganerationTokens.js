@@ -37,8 +37,6 @@ const generateRefreshToken = async (user) => {
     return refreshtoken;
 };
 
-
-
 const generateToken = async () => {
     const token = await generateAccessToken(1);
     console.log(token);

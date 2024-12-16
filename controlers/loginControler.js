@@ -46,7 +46,6 @@ async function refresh(req, res) {
     try {
         const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
 
-
         const user = await User.findByPk(decoded.id);
 
         if (!user) {

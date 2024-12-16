@@ -15,8 +15,5 @@ router.get('/', getAllBook );
 
 routername.get('/',getHello)
 
-
-
-
 module.exports = {router, routername};
 
