@@ -33,6 +33,18 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DataTypes.DATE
       },
+      rolle:{
+        type: Sequelize.DataTypes.STRING(250),
+        allowNull: false,
+      },
+      accessToken: {
+        allowNull: true,
+        type: Sequelize.DataTypes.STRING(1000)
+      },
+      refreshToken: {
+        allowNull: true,
+        type:Sequelize.DataTypes.STRING(1000)
+      },
       updatedAt: {
         allowNull: true,
         type: Sequelize.DataTypes.DATE

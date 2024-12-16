@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       type: DataTypes.STRING
     },
+    rolle:{
+      type: DataTypes.STRING(250),
+      allowNull: false,
+    },
 
   },{
     sequelize,

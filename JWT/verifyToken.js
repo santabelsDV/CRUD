@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-
+const {User} = require('../database/models');
 const verifyToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-        return res.status(401).json({ message: 'У доступі відмовлено. Токен не надано.' });
+        return res.status(401).json({message: 'У доступі відмовлено. Токен не надано.'});
     }
 
     try {
@@ -12,8 +12,9 @@ const verifyToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        res.status(400).json({ message: 'Недійсний токен' });
+        res.status(400).json({message: 'Недійсний токен'});
     }
 };
 
-module.exports = { verifyToken };
+
+module.exports = {verifyToken};
