@@ -82,6 +82,8 @@ async function registration(req, res) {
             }
         });
 
+
+
     }catch (e){
         console.log(e);
     }
@@ -92,6 +94,7 @@ async function registration(req, res) {
     if (userLogin) {
         return res.status(400).json({message: 'Такий логін вже існує'});
     }
+
 
     let randomCode =Math.floor(Math.random() * 1000000);
 
@@ -132,6 +135,15 @@ async function checkCode(req, res) {
         return res.status(400).json({message: 'Невірний код'});
 
     }
+    if(!firstName || !lastName || !login || !password){
+        return res.status(400).json({message: 'Всі поля повинні бути заповнені'});
+    }
+
+
+
+    // if ((user.createdAt - new Date())/(1000*60) <  5){
+    //     return res.status(400).json({message: 'Час дії коду закінчився'});
+    // }
 
 
     RegistrationCache.destroy({

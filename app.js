@@ -1,12 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const {router, routername} = require('./routes/books');
 const loginRouter=require('./routes/login')
 const {checkConnection}=require('./database/conector');
 const {verifyToken} = require('./JWT/verifyToken');
 
+
+
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 console.log(`Сервер запущено на http://localhost:${port}`);
 app.use(bodyParser.json({limit: "10kb"}));

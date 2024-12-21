@@ -44,7 +44,7 @@ const generateToken = async () => {
     console.log(decoded);
 };
 
-generateToken();
+
 
 
 module.exports = { generateAccessToken ,generateRefreshToken};
