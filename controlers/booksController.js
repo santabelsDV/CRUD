@@ -6,17 +6,22 @@ async function getAllBook(req, res) {
     const limit = parseInt(req.query.limit, 10) || 10;
     const offset = (page - 1) * limit;
 
+    const allPages = await books.count();
+
     const usersWithCondition = await books.findAll({
         order: [['id', 'ASC']],
-        limit: limit,
+        limit: limit ,
         offset: offset,
     });
 
     const results = usersWithCondition.map(book => book.dataValues);
 
+    const currentPage = Math.ceil(allPages / limit);
+
     res.json({
         results,
-        currentPage: page,
+        allPages: currentPage,
+
     });
 }
 

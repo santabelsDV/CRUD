@@ -31,6 +31,6 @@ function  registationMessageInEmail(email,code) {
 
 }
 
-registationMessageInEmail("aitemix9@gmail.com","12345");
+
 
 module.exports = {registationMessageInEmail};

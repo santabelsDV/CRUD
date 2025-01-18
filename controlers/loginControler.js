@@ -141,9 +141,7 @@ async function checkCode(req, res) {
 
 
 
-    // if ((user.createdAt - new Date())/(1000*60) <  5){
-    //     return res.status(400).json({message: 'Час дії коду закінчився'});
-    // }
+
 
 
     RegistrationCache.destroy({
