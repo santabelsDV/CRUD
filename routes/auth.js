@@ -4,7 +4,7 @@ const passport = require('passport');
 const crypto = require('crypto');
 const {writeRefreshToken, writeAccessToken} = require("../JWT/writeTokens");
 const {generateRefreshToken, generateAccessToken} = require("../JWT/ganerationTokens");
-const {User} = require("../database/models"); // Додаємо імпорт crypto
+const {User} = require("../database/models");
 
 const authorizationCodes = new Map();
 
