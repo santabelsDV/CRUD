@@ -40,19 +40,18 @@ router.post('/token', express.json(), async (req, res) => {
     const {code} = req.body;
 
     if (!code) {
-        return res.status(400).json({error: 'Authorization code is required'});
+        return res.status(400).json({error: 'Потрібен код авторизації'});
     }
 
     const authData = authorizationCodes.get(code);
 
     if (!authData) {
-        return res.status(400).json({error: 'Invalid or expired code'});
+        return res.status(400).json({error: 'Недійсний або прострочений код'});
     }
-
 
     if (Date.now() - authData.createdAt > 5 * 60 * 1000) {
         authorizationCodes.delete(code);
-        return res.status(400).json({error: 'Code expired'});
+        return res.status(400).json({error: 'Термін дії коду закінчився'});
     }
     const finalUSer = await User.findOne(
         {

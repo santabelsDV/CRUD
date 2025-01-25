@@ -23,7 +23,6 @@ passport.use(
         passportConfig,
         async (accessToken, refreshToken, profile, done) => {
             try {
-                // Формування об'єкта користувача
                 const finalUSer = {
                     firstName: profile.name.givenName,
                     lastName: profile.name.familyName || ' ',
@@ -35,23 +34,19 @@ passport.use(
                     updatedAt: new Date(),
                 };
 
-                // Пошук існуючого користувача
                 const existingUser = await User.findOne({ where: { login: profile.emails[0].value } });
                 if (existingUser) {
                     return done(null, existingUser);
                 }
 
-                // Створення нового користувача
                 const newUser = await User.create(finalUSer);
 
-                // Генерація та збереження токенів
                 const refreshToken = await generateRefreshToken(finalUSer);
                 const accessToken = await generateAccessToken(finalUSer);
 
                 await writeRefreshToken(newUser.id, refreshToken);
                 await writeAccessToken(newUser.id, accessToken);
 
-                // Повернення нового користувача
                 return done(null, newUser);
             } catch (error) {
                 console.error('Помилка в GoogleStrategy:', error);
