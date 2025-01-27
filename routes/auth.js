@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const crypto = require('crypto');
-const {writeRefreshToken, writeAccessToken} = require("../JWT/writeTokens");
-const {generateRefreshToken, generateAccessToken} = require("../JWT/ganerationTokens");
-const {User} = require("../database/models");   
+const {writeRefreshToken, writeAccessToken} = require("../app/service/JWT/writeTokens");
+const {generateRefreshToken, generateAccessToken} = require("../app/service/JWT/ganerationTokens");
+const {User} = require("../database/models");
 
 const authorizationCodes = new Map();
 
@@ -16,10 +16,12 @@ router.get(
 );
 
 
+
 router.get(
     '/google/callback',
     passport.authenticate('google', { session: false }),
     (req, res) => {
+
         const authCode = crypto.randomBytes(32).toString('hex');
 
         authorizationCodes.set(authCode, {
@@ -71,7 +73,7 @@ router.post('/token', express.json(), async (req, res) => {
     tokens = {
         Tokens:{
             acsessToken: acsessToken,
-            refreshToken:refreshToken
+            refreshToken: refreshToken
         }
     }
 

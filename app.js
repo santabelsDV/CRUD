@@ -4,9 +4,9 @@ const cors = require('cors');
 const {router, routername} = require('./routes/books');
 const loginRouter = require('./routes/login')
 const {checkConnection} = require('./database/conector');
-const {verifyToken} = require('./JWT/verifyToken');
+const {verifyToken} = require('./app/service/JWT/verifyToken');
 const authRoutes = require('./routes/auth');
-const passport = require('./OAuth/Passport');
+const passport = require('./app/service/OAuth/Passport');
 
 const app = express();
 const port = process.env.PORT || 3000;

@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { User } = require('../database/models');
+const { User } = require('../../../database/models');
 const { writeRefreshToken, writeAccessToken } = require("../JWT/writeTokens");
 const { generateRefreshToken, generateAccessToken } = require("../JWT/ganerationTokens");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;

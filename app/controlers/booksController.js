@@ -1,5 +1,5 @@
 
-const {books} = require('../database/models');
+const {books} = require('../../database/models');
 
 async function getAllBook(req, res) {
     const page = parseInt(req.query.page, 10) || 1;
@@ -8,13 +8,13 @@ async function getAllBook(req, res) {
 
     const allPages = await books.count();
 
-    const usersWithCondition = await books.findAll({
+    const booksWithCondition = await books.findAll({
         order: [['id', 'ASC']],
         limit: limit ,
         offset: offset,
     });
 
-    const results = usersWithCondition.map(book => book.dataValues);
+    const results = booksWithCondition.map(book => book.dataValues);
 
     const currentPage = Math.ceil(allPages / limit);
 
@@ -41,7 +41,6 @@ async function addBook(req, res) {
         console.error('Помилка створення книги:', error);
         res.status(500).send('Помилка створення книги');
     }
-
 
 }
 

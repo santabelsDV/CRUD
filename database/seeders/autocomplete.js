@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const {books} = require('../database/models');
+const {books} = require('../models');
 
 for (let i = 0; i < 20; i++) {
     const Pages = faker.number.int({ min: 1, max: 1000 });

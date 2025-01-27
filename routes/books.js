@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const routername = express.Router();
-const { getBook, deleteBook, updateBook, addBook, getAllBook, getHello} = require('../controlers/booksController');
+const { getBook, deleteBook, updateBook, addBook, getAllBook, getHello} = require('../app/controlers/booksController');
 
 router.get('/:id', getBook);
 

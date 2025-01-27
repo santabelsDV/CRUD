@@ -1,9 +1,9 @@
-const {User} = require('../database/models');
-const { generateAccessToken ,generateRefreshToken}=require('../JWT/ganerationTokens')
-const {writeRefreshToken, writeAccessToken}=require('../JWT/writeTokens')
+const {User} = require('../../database/models');
+const { generateAccessToken ,generateRefreshToken}=require('../service/JWT/ganerationTokens')
+const {writeRefreshToken, writeAccessToken}=require('../service/JWT/writeTokens')
 const jwt = require("jsonwebtoken");
-const {RegistrationCache} = require("../database/models");
-const {registationMessageInEmail}= require("../gmailBot/transporter");
+const {RegistrationCache} = require("../../database/models");
+const {registationMessageInEmail}= require("../service/gmailBot/transporter");
 
 async function login(req, res) {
     const {login, password} = req.body;

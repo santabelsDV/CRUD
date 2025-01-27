@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const {User} = require('../database/models');
+const {User} = require('../../../database/models');
 
 const writeRefreshToken =  (userId, refreshtoken) => {
 
