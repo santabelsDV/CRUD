@@ -1,6 +1,5 @@
-
 const {books} = require('../../database/models');
-
+const {validationScheme , validateData} = require('../service/validation/validationScheme');
 async function getAllBook(req, res) {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -10,7 +9,7 @@ async function getAllBook(req, res) {
 
     const booksWithCondition = await books.findAll({
         order: [['id', 'ASC']],
-        limit: limit ,
+        limit: limit,
         offset: offset,
     });
 
@@ -26,7 +25,19 @@ async function getAllBook(req, res) {
 }
 
 async function addBook(req, res) {
-    const {Pages, Name, Author, Year} = req.body;
+
+    let Pages = parseInt(req.body.Pages, 10);
+    let Name = String(req.body.Name);
+    let Author = String(req.body.Author);
+    let Year = String(req.body.Year);
+
+
+    const validationResult = validateData(req.body, ["Pages", "Name", "Author", "Year"]);
+
+    if (validationResult !== 'Validation passed') {
+        return res.status(400).send(validationResult); // Відправляємо повідомлення про помилку
+    }
+
 
     try {
         await books.create({
@@ -36,10 +47,10 @@ async function addBook(req, res) {
             Year: Year
         });
 
-        res.status(200).send('Книгу успішно створено');
+        res.status(200).send('The book has been successfully created');
     } catch (error) {
-        console.error('Помилка створення книги:', error);
-        res.status(500).send('Помилка створення книги');
+        console.error('Error creating a book:', error);
+        res.status(500).send('Error creating a book');
     }
 
 }
@@ -55,11 +66,11 @@ async function deleteBook(req, res) {
             }
         });
 
-        res.status(200).send('Книгу успішно видалено');
+        res.status(200).send('Book successfully deleted');
 
     } catch (error) {
-        console.error('Помилка видалення книги:', error);
-        res.status(500).send('Помилка видалення книги');
+        console.error('Error deleting a book:', error);
+        res.status(500).send('Error deleting a book');
     }
 }
 
@@ -74,14 +85,14 @@ async function updateBook(req, res) {
             Author: Author,
             Year: Year
         }, {
-        where: {
-            id: id
-        }
+            where: {
+                id: id
+            }
         })
-        res.status(200).send('Книгу успішно змінено');
+        res.status(200).send('Book successfully modified');
     } catch (error) {
-        console.error('Помилка зміни книги:', error);
-        res.status(500).send('Помилка ззміни книги');
+        console.error('Error changing the book:', error);
+        res.status(500).send('Book change error');
     }
 }
 
@@ -98,13 +109,13 @@ async function getBook(req, res) {
         });
 
     } catch (error) {
-        console.error('Помилка при отриманні книг:', error);
-        res.status(500).send('Помилка сервера');
+        console.error('Error when receiving books:', error);
+        res.status(500).send('Server error');
     }
 }
 
 async function getHello(req, res) {
-    res.send('Все працює!');
+    res.send('Everything works!');
 }
 
 module.exports = {getBook, deleteBook, updateBook, getAllBook, addBook, getHello};

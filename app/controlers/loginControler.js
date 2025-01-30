@@ -1,9 +1,9 @@
 const {User} = require('../../database/models');
-const { generateAccessToken ,generateRefreshToken}=require('../service/JWT/ganerationTokens')
-const {writeRefreshToken, writeAccessToken}=require('../service/JWT/writeTokens')
+const {generateAccessToken, generateRefreshToken} = require('../service/JWT/ganerationTokens')
+const {writeRefreshToken, writeAccessToken} = require('../service/JWT/writeTokens')
 const jwt = require("jsonwebtoken");
 const {RegistrationCache} = require("../../database/models");
-const {registationMessageInEmail}= require("../service/gmailBot/transporter");
+const {registationMessageInEmail} = require("../service/gmailBot/transporter");
 
 async function login(req, res) {
     const {login, password} = req.body;
@@ -18,7 +18,7 @@ async function login(req, res) {
         });
 
         if (!user) {
-            return res.status(401).json({message: 'Недійсний логін або пароль'});
+            return res.status(401).json({message: 'Invalid login or password'});
         }
 
         const refreshToken = await generateRefreshToken(user);
@@ -34,7 +34,7 @@ async function login(req, res) {
 
     } catch (e) {
         console.log(e);
-        res.status(500).send('Помилка входу');
+        res.status(500).send('Login error');
     }
 }
 
@@ -51,15 +51,15 @@ async function refresh(req, res) {
         const user = await User.findByPk(decoded.id);
 
         if (!user) {
-            return res.status(401).json({message: 'Користувач не знайдений'});
+            return res.status(401).json({message: 'User not found'});
         }
 
         const accessToken = await generateAccessToken(user);
         await writeAccessToken(user.id, accessToken);
 
-        res.json({ accessToken });
+        res.json({accessToken});
     } catch (error) {
-        res.status(400).json({message: 'Недійсний токен необхідно залогінитись'});
+        res.status(400).json({message: 'Invalid token requires logging in'});
     }
 }
 
@@ -71,37 +71,36 @@ async function registration(req, res) {
     let userLogin;
 
     try {
-         useremail = await User.findOne({
+        useremail = await User.findOne({
             where: {
                 email: email,
             }
         });
-         userLogin = await User.findOne({
+        userLogin = await User.findOne({
             where: {
                 login: login,
             }
         });
 
 
-
-    }catch (e){
+    } catch (e) {
         console.log(e);
     }
 
     if (useremail) {
-        return res.status(400).json({message: 'Така пошта вже існує'});
+        return res.status(400).json({message: 'Such mail already exists'});
     }
     if (userLogin) {
-        return res.status(400).json({message: 'Такий логін вже існує'});
+        return res.status(400).json({message: 'This login already exists'});
     }
 
 
-    let randomCode =Math.floor(Math.random() * 1000000);
+    let randomCode = Math.floor(Math.random() * 1000000);
 
     RegistrationCache.create(
         {
             email: email,
-            code:randomCode,
+            code: randomCode,
             login: login,
             password: password
         }
@@ -111,16 +110,16 @@ async function registration(req, res) {
         registationMessageInEmail(email, randomCode);
     } catch (e) {
         console.log(e);
-        res.status(500).send('Помилка реєстрації не вірна пошта!!');
+        res.status(500).send('Registration error is not the correct mail!!!');
     }
 
-    return res.status(200).json({message: 'Код успішно надіслано на пошту'});
+    return res.status(200).json({message: 'The code was successfully sent to the mail'});
 
 }
 
 async function checkCode(req, res) {
 
-    const {email, code, password,firstName, lastName, login} = req.body;
+    const {email, code, password, firstName, lastName, login} = req.body;
 
     const user = await RegistrationCache.findOne({
         where: {
@@ -131,18 +130,13 @@ async function checkCode(req, res) {
         }
     });
 
-    if(!user){
-        return res.status(400).json({message: 'Невірний код'});
+    if (!user) {
+        return res.status(400).json({message: 'Invalid code'});
 
     }
-    if(!firstName || !lastName || !login || !password){
-        return res.status(400).json({message: 'Всі поля повинні бути заповнені'});
+    if (!firstName || !lastName || !login || !password) {
+        return res.status(400).json({message: 'All fields must be filled in'});
     }
-
-
-
-
-
 
     RegistrationCache.destroy({
         where: {
@@ -150,7 +144,7 @@ async function checkCode(req, res) {
         }
     })
 
-    const finalUSer ={
+    const finalUSer = {
         firstName: firstName,
         lastName: lastName,
         login: login,
@@ -166,13 +160,11 @@ async function checkCode(req, res) {
         logging: false
     });
 
-    await  writeRefreshToken(newUser.id, await generateRefreshToken(finalUSer));
-    await  writeAccessToken(newUser.id, await  generateAccessToken(finalUSer));
+    await writeRefreshToken(newUser.id, await generateRefreshToken(finalUSer));
+    await writeAccessToken(newUser.id, await generateAccessToken(finalUSer));
 
 
-
-    return res.status(200).json({message: 'Код підтверджено'});
-
-
+    return res.status(200).json({message: 'The code has been confirmed'});
 }
-module.exports = {login,refresh,registration,checkCode};
+
+module.exports = {login, refresh, registration, checkCode};
