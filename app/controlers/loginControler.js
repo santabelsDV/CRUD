@@ -4,6 +4,7 @@ const {writeRefreshToken, writeAccessToken} = require('../service/JWT/writeToken
 const jwt = require("jsonwebtoken");
 const {RegistrationCache} = require("../../database/models");
 const {registationMessageInEmail} = require("../service/gmailBot/transporter");
+const { Op } = require('sequelize');
 
 async function login(req, res) {
     const {login, password} = req.body;
@@ -17,8 +18,8 @@ async function login(req, res) {
             }
         });
 
-        if (!user) {
-            return res.status(401).json({message: 'Invalid login or password'});
+        if (!user || user.status === false) {
+            return res.status(401).json({message: 'Invalid login or password or user is not active (activate by code in email)'});
         }
 
         const refreshToken = await generateRefreshToken(user);
@@ -67,42 +68,39 @@ async function registration(req, res) {
 
     const {login, email, password} = req.body;
 
-    let useremail;
-    let userLogin;
+    let existingUser;
 
     try {
-        useremail = await User.findOne({
+         existingUser = await User.findOne({
             where: {
-                email: email,
+                [Op.or]: [
+                    { email: email },
+                    { login: login }
+                ]
             }
         });
-        userLogin = await User.findOne({
-            where: {
-                login: login,
-            }
-        });
-
 
     } catch (e) {
         console.log(e);
     }
 
-    if (useremail) {
-        return res.status(400).json({message: 'Such mail already exists'});
+    if (existingUser) {
+        return res.status(400).json({message: 'Such mail already exists or such login already exists'});
     }
-    if (userLogin) {
-        return res.status(400).json({message: 'This login already exists'});
-    }
-
 
     let randomCode = Math.floor(Math.random() * 1000000);
 
-    RegistrationCache.create(
+    User.create(
         {
-            email: email,
-            code: randomCode,
             login: login,
-            password: password
+            email: email,
+            password: password,
+            rolle: 'user',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            code: randomCode,
+            status: false,
+            updatedCodeAt: new Date(),
         }
     )
 
@@ -121,50 +119,69 @@ async function checkCode(req, res) {
 
     const {email, code, password, firstName, lastName, login} = req.body;
 
-    const user = await RegistrationCache.findOne({
+    if ( !login || !password) {
+        return res.status(400).json({message: 'Invalid login or password'});
+    }
+
+    const user = await User.findOne({
         where: {
-            email: email,
-            code: code,
             login: login,
+            code: code,
             password: password
         }
     });
 
-    if (!user) {
+    if (!user || user.code !== code || user.updatedCodeAt < new Date() - 5 * 60 * 1000) {
         return res.status(400).json({message: 'Invalid code'});
-
     }
-    if (!firstName || !lastName || !login || !password) {
-        return res.status(400).json({message: 'All fields must be filled in'});
-    }
-
-    RegistrationCache.destroy({
-        where: {
-            email: email,
-        }
-    })
 
     const finalUSer = {
-        firstName: firstName,
-        lastName: lastName,
-        login: login,
-        password: password,
-        email: email,
+        firstName: firstName ||' ',
+        lastName: lastName || ' ',
+        login: login ,
+        password: password ,
+        email: email || user.email,
         rolle: 'user',
         createdAt: new Date(),
         updatedAt: new Date(),
+        status: true
     }
 
+    let updatedUser
 
-    const newUser = await User.create(finalUSer, {
-        logging: false
+    try {
+        await User.update(finalUSer, {
+            where: {login: login},
+            returning: true
+        });
+
+        updatedUser = await User.findOne({
+            where: {
+                login: login
+            }
+        })
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Registration error');
+    }
+
+    let accessToken
+    let refreshToken
+
+    if (updatedUser) {
+        const userId = updatedUser.id;
+        accessToken  = await generateAccessToken(finalUSer);
+        refreshToken = await generateRefreshToken(finalUSer);
+        await writeRefreshToken(userId,refreshToken );
+        await writeAccessToken(userId, accessToken);
+    }
+
+    return res.status(200).json({
+        message: 'The code has been confirmed',
+        accessToken: accessToken,
+        refreshToken:refreshToken
+
     });
-
-    await writeRefreshToken(newUser.id, await generateRefreshToken(finalUSer));
-    await writeAccessToken(newUser.id, await generateAccessToken(finalUSer));
-
-
-    return res.status(200).json({message: 'The code has been confirmed'});
 }
 
 module.exports = {login, refresh, registration, checkCode};

@@ -19,18 +19,18 @@ module.exports = {
       },
       firstName: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       lastName: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       login: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
       createdAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.DATE
       },
       rolle:{
@@ -48,6 +48,18 @@ module.exports = {
       updatedAt: {
         allowNull: true,
         type: Sequelize.DataTypes.DATE
+      },
+      status:{
+        type: Sequelize.DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      code: {
+        type: Sequelize.DataTypes.INTEGER,
+        allowNull: true,
+      },
+      updatedCodeAt: {
+        allowNull: true,
+        type: Sequelize.DATE
       }
     });
   },

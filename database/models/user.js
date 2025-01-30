@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     login: {
       type: DataTypes.STRING,
@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     createdAt: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.DATE
     },
     updatedAt: {
@@ -60,6 +60,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(250),
       allowNull: false,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    code: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    updatedCodeAt: {
+      allowNull: true,
+      type: DataTypes.DATE
+    }
 
   },{
     sequelize,

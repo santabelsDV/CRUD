@@ -78,6 +78,13 @@ async function updateBook(req, res) {
     const {Pages, Name, Author, Year} = req.body;
     let id = parseInt(req.params.id, 10);
 
+    const validationResult = validateData(req.body, ["Pages", "Name", "Author", "Year"]);
+
+    if (validationResult !== 'Validation passed') {
+        return res.status(400).send(validationResult); // Відправляємо повідомлення про помилку
+    }
+
+
     try {
         await books.update({
             Pages: Pages,
