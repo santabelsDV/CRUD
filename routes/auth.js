@@ -18,8 +18,8 @@ router.get('/google/callback',
 );
 
 router.post('/token', express.json(),
-     (req, res) => {
-     OauthController.checkCode(req, res);
-});
+    (req, res) => {
+        OauthController.checkCode(req, res);
+    });
 
 module.exports = router;

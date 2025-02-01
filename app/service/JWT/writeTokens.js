@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {User} = require('../../../database/models');
+const {User} = require('../../models');
 
 const writeRefreshToken = async (userId, refreshtoken) => {
 
@@ -12,7 +12,7 @@ const writeRefreshToken = async (userId, refreshtoken) => {
 
     } catch (e) {
         console.log(e);
-        throw new Error("Помилка при оновленні токену");
+        throw new Error("Error when updating a token");
     }
 
     return refreshtoken;
@@ -31,7 +31,7 @@ const writeAccessToken = async (userId, accesstoken) => {
 
     } catch (e) {
         console.log(e);
-        throw new Error("Помилка при оновленні токену");
+        throw new Error("Error when updating a token");
     }
 
     return accesstoken;

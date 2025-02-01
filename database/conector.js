@@ -1,16 +1,15 @@
-const {sequelize} = require('./models');
+const {sequelize} = require('../app/models');
+
 async function checkConnection() {
     try {
-        // Перевірка підключення до бази даних
+        // Check the connection to the database
         await sequelize.authenticate(
             {logging: false}
         );
-        console.log('Підключення до бази даних успішне!');
+        console.log('Connection to the database is successful!');
     } catch (error) {
-        console.error('Не вдалося підключитися до бази даних:', error);
+        console.error('Could not connect to the database:', error);
     }
 }
 
-
-
-module.exports = {checkConnection };
+module.exports = {checkConnection};

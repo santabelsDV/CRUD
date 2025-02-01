@@ -1,12 +1,12 @@
 const crypto = require('crypto');
-const {User} = require("../../database/models");
-const {generateAccessToken, generateRefreshToken} = require ("../service/JWT/ganerationTokens");
+const {User} = require("../models");
+const {generateAccessToken, generateRefreshToken} = require("../service/JWT/ganerationTokens");
 const {writeAccessToken, writeRefreshToken} = require("../service/JWT/writeTokens");
 
 const authorizationCodes = new Map();
 
 
-class  OauthController   {
+class OauthController {
 
     async callback(req, res) {
         try {
@@ -34,18 +34,18 @@ class  OauthController   {
             const {code} = req.body;
 
             if (!code) {
-                return res.status(400).json({error: 'Потрібен код авторизації'});
+                return res.status(400).json({error: 'Authorization code required'});
             }
 
             const authData = authorizationCodes.get(code);
 
             if (!authData) {
-                return res.status(400).json({error: 'Недійсний або прострочений код'});
+                return res.status(400).json({error: 'Invalid or expired code'});
             }
 
             if (Date.now() - authData.createdAt > 5 * 60 * 1000) {
                 authorizationCodes.delete(code);
-                return res.status(400).json({error: 'Термін дії коду закінчився'});
+                return res.status(400).json({error: 'The code has expired'});
             }
             const finalUSer = await User.findOne(
                 {
@@ -65,13 +65,13 @@ class  OauthController   {
             res.json(
                 {
                     Tokens: {
-                    acsessToken: acsessToken,
-                    refreshToken: refreshToken
-                }
-            });
+                        acsessToken: acsessToken,
+                        refreshToken: refreshToken
+                    }
+                });
         } catch (e) {
             console.log(e);
-    res.status(500).json({message: 'Server error'});
+            res.status(500).json({message: 'Server error'});
         }
     }
 }

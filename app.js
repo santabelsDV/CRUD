@@ -32,14 +32,11 @@ app.listen(port, (err) => {
 // ------------------------------------------------------------------------
 app.use(passport.initialize());
 app.use('/auth', authRoutes);
-
 // ------------------------------------------------------------------------
 
 checkConnection().then(() => {
-
     app.use('/books', verifyToken, router);
     app.use('/', routerName);
-
 });
 
 app.use('/login', loginRouter);

@@ -1,4 +1,4 @@
-const {User} = require('../../database/models');
+const {User} = require('../models');
 const {generateAccessToken, generateRefreshToken} = require('../service/JWT/ganerationTokens')
 const {writeRefreshToken, writeAccessToken} = require('../service/JWT/writeTokens')
 const jwt = require("jsonwebtoken");

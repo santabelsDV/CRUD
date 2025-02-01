@@ -71,14 +71,14 @@ const validationScheme = Joi.object({
 function validateData(data, fields) {
     let schema = validationScheme;
 
-    // Видаляємо `required()` у всіх полях, які не передані
+    // Remove `required()` in all fields that are not passed
     Object.keys(validationScheme.describe().keys).forEach((key) => {
         if (!fields.includes(key)) {
-            schema = schema.fork([key], (s) => s.optional()); // Робимо поле необов'язковим
+            schema = schema.fork([key], (s) => s.optional()); // Make the field optional
         }
     });
 
-    schema = schema.fork(fields, (s) => s.required()); // Робимо вибрані поля обов'язковими
+    schema = schema.fork(fields, (s) => s.required()); // Make selected fields mandatory
 
     const {error} = schema.validate(data);
     return error ? error.details[0].message : 'Validation passed';

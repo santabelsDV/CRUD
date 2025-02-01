@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { User } = require('../../../database/models');
+const { User } = require('../../models');
 const { writeRefreshToken, writeAccessToken } = require("../JWT/writeTokens");
 const { generateRefreshToken, generateAccessToken } = require("../JWT/ganerationTokens");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -50,7 +50,7 @@ passport.use(
 
                 return done(null, newUser);
             } catch (error) {
-                console.error('Помилка в GoogleStrategy:', error);
+                console.error('Error GoogleStrategy:', error);
                 return done(error, null);
             }
         }

@@ -1,4 +1,4 @@
-const {books} = require('../../database/models');
+const {books} = require('../models');
 const {validateData} = require('../service/validation/validationScheme');
 
 async function getAllBook(req, res) {
