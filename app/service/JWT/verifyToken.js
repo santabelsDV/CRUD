@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const {User} = require('../../../database/models');
 
 const verifyToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -9,8 +8,7 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        req.user = jwt.verify(token, process.env.JWT_SECRET);
         next();
     } catch (error) {
         res.status(400).json({message: 'Недійсний токен'});

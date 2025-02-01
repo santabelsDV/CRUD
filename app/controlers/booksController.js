@@ -1,5 +1,6 @@
 const {books} = require('../../database/models');
-const {validationScheme , validateData} = require('../service/validation/validationScheme');
+const {validateData} = require('../service/validation/validationScheme');
+
 async function getAllBook(req, res) {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -31,13 +32,11 @@ async function addBook(req, res) {
     let Author = String(req.body.Author);
     let Year = String(req.body.Year);
 
-
     const validationResult = validateData(req.body, ["Pages", "Name", "Author", "Year"]);
 
     if (validationResult !== 'Validation passed') {
         return res.status(400).send(validationResult);
     }
-
 
     try {
         await books.create({
@@ -83,7 +82,6 @@ async function updateBook(req, res) {
     if (validationResult !== 'Validation passed') {
         return res.status(400).send(validationResult); // Відправляємо повідомлення про помилку
     }
-
 
     try {
         await books.update({

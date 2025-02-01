@@ -1,8 +1,7 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const {User} = require('../../../database/models');
 
-const writeRefreshToken =  (userId, refreshtoken) => {
+const writeRefreshToken = async (userId, refreshtoken) => {
 
     try {
         User.update({
@@ -19,14 +18,14 @@ const writeRefreshToken =  (userId, refreshtoken) => {
     return refreshtoken;
 };
 
-const writeAccessToken =  (userId, accesstoken) => {
+const writeAccessToken = async (userId, accesstoken) => {
 
     try {
         User.update({
             accessToken: accesstoken,
         }, {
             where: {id: userId},
-        },{
+        }, {
             logging: false
         });
 

@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-function  registationMessageInEmail(email,code) {
+function  registrationNotificationByEmail(email, code) {
 
     const mailOptions = {
         from: process.env.BOT_EMAIL,
@@ -33,4 +33,4 @@ function  registationMessageInEmail(email,code) {
 
 
 
-module.exports = {registationMessageInEmail};
+module.exports = {registrationNotificationByEmail};

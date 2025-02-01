@@ -36,36 +36,36 @@ const validationScheme = Joi.object({
             'string.min': 'Password must be at least 2 characters',
             'string.max': 'Password must be less than 200 characters'
 
-    }),
+        }),
     refreshToken: Joi.string().trim().min(2).max(200).required()
         .messages({
             'string.empty': 'Refresh token is required',
             'string.min': 'Refresh token must be at least 2 characters',
             'string.max': 'Refresh token must be less than 200 characters'
-    }),
+        }),
     email: Joi.string().trim().email().required()
         .messages({
             'string.empty': 'Email is required',
             'string.email': 'Email is invalid'
-    }),
+        }),
     code: Joi.string().trim().min(300).max(9999).required()
         .messages({
             'string.empty': 'Code is required',
             'string.min': 'Code must be at least 300 characters',
             'string.max': 'Code must be less than 9999 characters'
-    }),
+        }),
     firstName: Joi.string().trim().min(2).max(200).required()
         .messages({
             'string.empty': 'First name is required',
             'string.min': 'First name must be at least 2 characters',
             'string.max': 'First name must be less than 200 characters'
-    }),
+        }),
     lastName: Joi.string().trim().min(2).max(200).required()
         .messages({
             'string.empty': 'Last name is required',
             'string.min': 'Last name must be at least 2 characters',
             'string.max': 'Last name must be less than 200 characters'
-    })
+        })
 });
 
 function validateData(data, fields) {
@@ -80,9 +80,8 @@ function validateData(data, fields) {
 
     schema = schema.fork(fields, (s) => s.required()); // Робимо вибрані поля обов'язковими
 
-    const { error } = schema.validate(data);
+    const {error} = schema.validate(data);
     return error ? error.details[0].message : 'Validation passed';
 }
 
-
-module.exports = { validationScheme, validateData };
+module.exports = {validationScheme, validateData};

@@ -28,22 +28,12 @@ app.listen(port, (err) => {
         console.error(err);
     }
 });
+
 // ------------------------------------------------------------------------
 app.use(passport.initialize());
 app.use('/auth', authRoutes);
 
-
-
 // ------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
 
 checkConnection().then(() => {
 
@@ -51,6 +41,5 @@ checkConnection().then(() => {
     app.use('/', routername);
 
 });
-
 
 app.use('/login', loginRouter);

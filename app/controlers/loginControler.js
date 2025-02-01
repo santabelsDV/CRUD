@@ -2,9 +2,8 @@ const {User} = require('../../database/models');
 const {generateAccessToken, generateRefreshToken} = require('../service/JWT/ganerationTokens')
 const {writeRefreshToken, writeAccessToken} = require('../service/JWT/writeTokens')
 const jwt = require("jsonwebtoken");
-const {RegistrationCache} = require("../../database/models");
-const {registationMessageInEmail} = require("../service/gmailBot/transporter");
-const { Op } = require('sequelize');
+const {registrationNotificationByEmail} = require("../service/gmailBot/transporter");
+const {Op} = require('sequelize');
 const {validateData} = require("../service/validation/validationScheme");
 
 async function login(req, res) {
@@ -19,7 +18,6 @@ async function login(req, res) {
     }
 
     let user;
-
 
     try {
         user = await User.findOne({
@@ -90,11 +88,11 @@ async function registration(req, res) {
     let existingUser;
 
     try {
-         existingUser = await User.findOne({
+        existingUser = await User.findOne({
             where: {
                 [Op.or]: [
-                    { email: email },
-                    { login: login }
+                    {email: email},
+                    {login: login}
                 ]
             }
         });
@@ -124,7 +122,7 @@ async function registration(req, res) {
     )
 
     try {
-        registationMessageInEmail(email, randomCode);
+        registrationNotificationByEmail(email, randomCode);
     } catch (e) {
         console.log(e);
         res.status(500).send('Registration error is not the correct mail!!!');
@@ -146,7 +144,7 @@ async function checkCode(req, res) {
         return res.status(400).send(validationResult);
     }
 
-    if ( !login || !password) {
+    if (!login || !password) {
         return res.status(400).json({message: 'Invalid login or password'});
     }
 
@@ -164,10 +162,10 @@ async function checkCode(req, res) {
     }
 
     const finalUSer = {
-        firstName: firstName ||' ',
+        firstName: firstName || ' ',
         lastName: lastName || ' ',
-        login: login ,
-        password: password ,
+        login: login,
+        password: password,
         email: email || user.email,
         rolle: 'user',
         createdAt: new Date(),
@@ -198,16 +196,16 @@ async function checkCode(req, res) {
 
     if (updatedUser) {
         const userId = updatedUser.id;
-        accessToken  = await generateAccessToken(finalUSer);
+        accessToken = await generateAccessToken(finalUSer);
         refreshToken = await generateRefreshToken(finalUSer);
-        await writeRefreshToken(userId,refreshToken );
+        await writeRefreshToken(userId, refreshToken);
         await writeAccessToken(userId, accessToken);
     }
 
     return res.status(200).json({
         message: 'The code has been confirmed',
         accessToken: accessToken,
-        refreshToken:refreshToken
+        refreshToken: refreshToken
 
     });
 }

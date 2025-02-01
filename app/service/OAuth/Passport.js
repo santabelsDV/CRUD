@@ -30,6 +30,7 @@ passport.use(
                     password: profile.id,
                     email: profile.emails[0].value,
                     rolle: 'user',
+                    status: true,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 };

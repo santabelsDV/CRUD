@@ -1,7 +1,5 @@
-
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const {User} = require('../../../database/models');
 
 const  generateAccessToken = async (user) => {
 
@@ -15,9 +13,7 @@ const  generateAccessToken = async (user) => {
         rolle: user.rolle,
     }
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });
-
-    return token;
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' }); // get access token
 };
 
 const generateRefreshToken = async (user) => {
@@ -32,17 +28,16 @@ const generateRefreshToken = async (user) => {
         rolle: user.rolle,
     }
 
-    const refreshtoken = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '2d'});
-
-    return refreshtoken;
+    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '2d'}); // get refresh token
 };
 
-const generateToken = async () => {
-    const token = await generateAccessToken(1);
-    console.log(token);
-    const decoded = jwt.decode(token, process.env.JWT_SECRET);
-    console.log(decoded);
-};
+// check token works and example
+// const generateToken = async () => {
+//     const token = await generateAccessToken(1);
+//     console.log(token);
+//     const decoded = jwt.decode(token, process.env.JWT_SECRET);
+//     console.log(decoded);
+// };
 
 
 
