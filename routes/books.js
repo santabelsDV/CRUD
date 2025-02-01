@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const routername = express.Router();
+const routerName = express.Router();
 const { getBook, deleteBook, updateBook, addBook, getAllBook, getHello} = require('../app/controlers/booksController');
 
 router.get('/:id', getBook);
@@ -13,7 +13,6 @@ router.post('/', addBook);
 
 router.get('/', getAllBook );
 
-routername.get('/',getHello)
+routerName.get('/',getHello)
 
-module.exports = {router, routername};
-
+module.exports = {router, routerName};

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const {router, routername} = require('./routes/books');
+const {router, routerName} = require('./routes/books');
 const loginRouter = require('./routes/login')
 const {checkConnection} = require('./database/conector');
 const {verifyToken} = require('./app/service/JWT/verifyToken');
@@ -38,7 +38,7 @@ app.use('/auth', authRoutes);
 checkConnection().then(() => {
 
     app.use('/books', verifyToken, router);
-    app.use('/', routername);
+    app.use('/', routerName);
 
 });
 
