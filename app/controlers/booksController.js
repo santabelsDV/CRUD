@@ -35,7 +35,7 @@ async function addBook(req, res) {
     const validationResult = validateData(req.body, ["Pages", "Name", "Author", "Year"]);
 
     if (validationResult !== 'Validation passed') {
-        return res.status(400).send(validationResult); // Відправляємо повідомлення про помилку
+        return res.status(400).send(validationResult);
     }
 
 

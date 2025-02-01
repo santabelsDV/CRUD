@@ -5,10 +5,21 @@ const jwt = require("jsonwebtoken");
 const {RegistrationCache} = require("../../database/models");
 const {registationMessageInEmail} = require("../service/gmailBot/transporter");
 const { Op } = require('sequelize');
+const {validateData} = require("../service/validation/validationScheme");
 
 async function login(req, res) {
     const {login, password} = req.body;
+
+    const keyInReq = Object.keys(req.body);
+
+    const validationResult = validateData(req.body, keyInReq);
+
+    if (validationResult !== 'Validation passed') {
+        return res.status(400).send(validationResult);
+    }
+
     let user;
+
 
     try {
         user = await User.findOne({
@@ -68,6 +79,14 @@ async function registration(req, res) {
 
     const {login, email, password} = req.body;
 
+    const keyInReq = Object.keys(req.body);
+
+    const validationResult = validateData(req.body, keyInReq);
+
+    if (validationResult !== 'Validation passed') {
+        return res.status(400).send(validationResult);
+    }
+
     let existingUser;
 
     try {
@@ -119,6 +138,14 @@ async function checkCode(req, res) {
 
     const {email, code, password, firstName, lastName, login} = req.body;
 
+    const keyInReq = Object.keys(req.body);
+
+    const validationResult = validateData(req.body, keyInReq);
+
+    if (validationResult !== 'Validation passed') {
+        return res.status(400).send(validationResult);
+    }
+
     if ( !login || !password) {
         return res.status(400).json({message: 'Invalid login or password'});
     }
@@ -130,6 +157,7 @@ async function checkCode(req, res) {
             password: password
         }
     });
+
 
     if (!user || user.code !== code || user.updatedCodeAt < new Date() - 5 * 60 * 1000) {
         return res.status(400).json({message: 'Invalid code'});
