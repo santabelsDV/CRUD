@@ -56,21 +56,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       type: DataTypes.STRING
     },
-    rolle:{
+    role:{
       type: DataTypes.STRING(250),
       allowNull: false,
     },
     status: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    code: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     updatedCodeAt: {
       allowNull: true,
       type: DataTypes.DATE
+    },
+    fotoLink: {
+      allowNull: true,
+      type: DataTypes.STRING
     }
 
   },{

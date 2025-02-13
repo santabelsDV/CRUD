@@ -6,6 +6,8 @@ const {registrationNotificationByEmail} = require("../service/gmailBot/transport
 const {Op} = require('sequelize');
 const {validateData} = require("../service/validation/validationScheme");
 
+const authorizationCodes = new Map();
+
 async function login(req, res) {
     const {login, password} = req.body;
 
@@ -107,18 +109,44 @@ async function registration(req, res) {
 
     let randomCode = Math.floor(Math.random() * 1000000);
 
-    User.create(
-        {
-            login: login,
-            email: email,
-            password: password,
-            rolle: 'user',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            code: randomCode,
-            status: false,
-            updatedCodeAt: new Date(),
+    if (authorizationCodes.has(randomCode)) {
+       while (authorizationCodes.has(randomCode)) {
+           randomCode = Math.floor(Math.random() * 1000000);
+       }
+    }
+
+    let personUser = {
+        login: login,
+        email: email,
+        password: password,
+        role: 'user',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        status: false,
+        updatedCodeAt: new Date(),
+    }
+    authorizationCodes.set(randomCode, {
+        user:personUser ,
+        createdAt: Date.now()
+    });
+
+    setTimeout(() => {
+        authorizationCodes.delete(randomCode);
+        try {
+            User.destroy(
+                {
+                    where: {
+                        login: login
+                    }
+                }
+            )
+        } catch (e) {
+            console.log(e);
         }
+    }, 5 * 60 * 1000);
+
+    User.create(
+        personUser
     )
 
     try {
@@ -134,7 +162,7 @@ async function registration(req, res) {
 
 async function checkCode(req, res) {
 
-    const {email, code, password, firstName, lastName, login} = req.body;
+    const { code, firstName, lastName, login} = req.body;
 
     const keyInReq = Object.keys(req.body);
 
@@ -144,30 +172,32 @@ async function checkCode(req, res) {
         return res.status(400).send(validationResult);
     }
 
-    if (!login || !password) {
-        return res.status(400).json({message: 'Invalid login or password'});
+    const codeNumber = Number(code);
+    const userDataInCode = authorizationCodes.get(codeNumber);
+
+    if (!userDataInCode || Date.now() - userDataInCode.createdAt > 5 * 60 * 1000) {
+        return res.status(400).json({ error: 'The code has expired or invalid code' });
     }
+
+    authorizationCodes.delete(codeNumber);
 
     const user = await User.findOne({
         where: {
             login: login,
-            code: code,
-            password: password
         }
     });
 
-
-    if (!user || user.code !== code || user.updatedCodeAt < new Date() - 5 * 60 * 1000) {
-        return res.status(400).json({message: 'Invalid code'});
+    if (!user || user.updatedCodeAt < new Date() - 5 * 60 * 1000) {
+        return res.status(400).json({error: 'Invalid code'});
     }
 
     const finalUSer = {
         firstName: firstName || ' ',
         lastName: lastName || ' ',
         login: login,
-        password: password,
-        email: email || user.email,
-        rolle: 'user',
+        password: user.password,
+        email: user.email,
+        role: 'user',
         createdAt: new Date(),
         updatedAt: new Date(),
         status: true

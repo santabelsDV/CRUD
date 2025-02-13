@@ -48,7 +48,7 @@ const validationScheme = Joi.object({
             'string.empty': 'Email is required',
             'string.email': 'Email is invalid'
         }),
-    code: Joi.string().trim().min(300).max(9999).required()
+    code: Joi.string().trim().min(1).max(9999).required()
         .messages({
             'string.empty': 'Code is required',
             'string.min': 'Code must be at least 300 characters',
@@ -65,7 +65,13 @@ const validationScheme = Joi.object({
             'string.empty': 'Last name is required',
             'string.min': 'Last name must be at least 2 characters',
             'string.max': 'Last name must be less than 200 characters'
-        })
+        }),
+    fotoLink: Joi.string().trim().min(2).max(1000).required()
+        .messages({
+            'string.empty': 'Foto link is required',
+            'string.min': 'Foto link must be at least 2 characters',
+            'string.max': 'Foto link must be less than 200 characters'
+        }),
 });
 
 function validateData(data, fields) {

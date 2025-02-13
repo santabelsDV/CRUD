@@ -33,7 +33,7 @@ module.exports = {
                 allowNull: true,
                 type: Sequelize.DataTypes.DATE
             },
-            rolle: {
+            role: {
                 type: Sequelize.DataTypes.STRING(250),
                 allowNull: false,
             },
@@ -50,16 +50,16 @@ module.exports = {
                 type: Sequelize.DataTypes.DATE
             },
             status: {
-                type: Sequelize.DataTypes.BOOLEAN,
-                allowNull: false,
-            },
-            code: {
                 type: Sequelize.DataTypes.INTEGER,
-                allowNull: true,
+                allowNull: false,
             },
             updatedCodeAt: {
                 allowNull: true,
                 type: Sequelize.DATE
+            },
+            fotoLink:{
+                allowNull: true,
+                type: Sequelize.DataTypes.STRING
             }
         });
     },

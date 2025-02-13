@@ -10,7 +10,7 @@ const  generateAccessToken = async (user) => {
         lastName: user.lastName,
         login: user.login,
         email: user.email,
-        rolle: user.rolle,
+        role: user.rolle,
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' }); // get access token
@@ -25,7 +25,7 @@ const generateRefreshToken = async (user) => {
         lastName: user.lastName,
         login: user.login,
         email: user.email,
-        rolle: user.rolle,
+        role: user.rolle,
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '2d'}); // get refresh token

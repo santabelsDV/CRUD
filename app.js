@@ -7,9 +7,12 @@ const {checkConnection} = require('./database/conector');
 const {verifyToken} = require('./app/service/JWT/verifyToken');
 const authRoutes = require('./routes/auth');
 const passport = require('./app/service/OAuth/Passport');
-
+const storageApp = require("./localStorage/app.js")
+const {routerUser} = require('./routes/userInterface');
 const app = express();
 const port = process.env.PORT || 3000;
+
+
 
 app.use(cors());
 
@@ -17,13 +20,13 @@ app.use(bodyParser.json({limit: "10kb"}));
 
 app.listen(port, (err) => {
     if (err) {
-        console.error(`Помилка запуску сервера: ${err}`);
+        console.error(`Server startup error: ${err}`);
         return;
     }
-    console.log(`Сервер працює за адресою http://localhost:${port}`);
+    console.log(`The server is located at http://localhost:${port}`);
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-        console.error(`Порт ${port} вже використовується.`);
+        console.error(`Port ${port} is already in use.`);
     } else {
         console.error(err);
     }
@@ -36,6 +39,7 @@ app.use('/auth', authRoutes);
 
 checkConnection().then(() => {
     app.use('/books', verifyToken, router);
+    app.use('/user',verifyToken, routerUser);
     app.use('/', routerName);
 });
 
