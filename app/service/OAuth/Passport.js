@@ -29,7 +29,7 @@ passport.use(
                     login: profile.emails[0].value,
                     password: profile.id,
                     email: profile.emails[0].value,
-                    rolle: 'user',
+                    role: 'user',
                     status: true,
                     createdAt: new Date(),
                     updatedAt: new Date(),
